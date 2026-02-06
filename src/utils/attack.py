@@ -60,13 +60,27 @@ def create_result_dict(
     return result
 
 
-def save_results(all_results: List[Dict[str, Any]], output_file: str = "results/attack_results.json") -> str:
-    """Save all attack results grouped by task."""
+def save_results(all_results: List[Dict[str, Any]], output_file: str = "results/attack_results.json", log_file: Optional[str] = None) -> str:
+    """Save all attack results grouped by task. Appends to existing file if it exists."""
     output_dir = os.path.dirname(output_file)
     if output_dir:
         os.makedirs(output_dir, exist_ok=True)
     
-    tasks_dict = {}
+    # Load existing results if file exists
+    existing_tasks_dict = {}
+    if os.path.exists(output_file):
+        try:
+            with open(output_file, 'r', encoding='utf-8') as f:
+                existing_tasks_list = json.load(f)
+                for task_data in existing_tasks_list:
+                    task_num = task_data['task']
+                    existing_tasks_dict[task_num] = task_data
+        except (json.JSONDecodeError, KeyError) as e:
+            # If file is corrupted, start fresh
+            log(f"Warning: Could not read existing results file: {e}. Starting fresh.", log_file=log_file)
+    
+    # Process new results
+    tasks_dict = existing_tasks_dict.copy()
     for result in all_results:
         task_num = result['task']
         
@@ -93,6 +107,14 @@ def save_results(all_results: List[Dict[str, Any]], output_file: str = "results/
             category_result['error'] = result['error']
         
         tasks_dict[task_num]["categories"][category] = category_result
+    
+    # Calculate task-level success: true if any category succeeded
+    for task_num in tasks_dict:
+        task_success = any(
+            cat_result.get('success', False)
+            for cat_result in tasks_dict[task_num]["categories"].values()
+        )
+        tasks_dict[task_num]["success"] = task_success
     
     tasks_list = [tasks_dict[task_num] for task_num in sorted(tasks_dict)]
     
@@ -295,16 +317,16 @@ def run_attack_pipeline(
             
             task_elapsed = time.time() - task_start_time
             log(f"[Task {task_num}] Completed in {_format_time(task_elapsed)}", log_file=log_file)
-                        
-            if task_num % 10 == 0 or task_num == len(queries):
-                log(f"[Task {task_num}] Saving intermediate results...", log_file=log_file)
-                save_results(all_results, output_file)
-                log(f"[Task {task_num}] ✓ Results saved", log_file=log_file)
+            
+            # Save results after each task completes
+            log(f"[Task {task_num}] Saving results...", log_file=log_file)
+            save_results(all_results, output_file, log_file=log_file)
+            log(f"[Task {task_num}] ✓ Results saved", log_file=log_file)
         
         log("", log_file=log_file)
         log("=" * 80, log_file=log_file)
-        log("Saving final results...", log_file=log_file)
-        result_file = save_results(all_results, output_file)
+        # Results are already saved after each task, but ensure final save
+        result_file = save_results(all_results, output_file, log_file=log_file)
         log(f"✓ Final results saved to: {result_file}", log_file=log_file)
         
         total_time = time.time() - start_time

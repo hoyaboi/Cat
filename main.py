@@ -29,7 +29,7 @@ def main():
     parser.add_argument(
         "--judge-model",
         type=str,
-        default="gpt-4o-mini",
+        default=None,
         help="Model name for Judge LLM (default: gpt-4o-mini)"
     )
     
