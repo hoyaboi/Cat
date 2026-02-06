@@ -34,14 +34,14 @@ class ModelFactory:
         Create Word LLM client.
         
         Args:
-            model_name: Model name (defaults to "gpt-3.5-turbo")
+            model_name: Model name (defaults to "gpt-4o-mini")
             
         Returns:
             Word LLM client instance
         """
         if model_name is None:
-            # Default to GPT-3.5 Turbo for Word LLM
-            model_name = "gpt-3.5-turbo"
+            # Default to GPT-4o-mini for Word LLM
+            model_name = "gpt-4o-mini"
         
         return ModelFactory.create_client(model_name)
     
@@ -51,14 +51,14 @@ class ModelFactory:
         Create Target LLM client.
         
         Args:
-            model_name: Model name (defaults to "gpt-4")
+            model_name: Model name (defaults to "gpt-4o-mini")
             
         Returns:
             Target LLM client instance
         """
         if model_name is None:
-            # Default to GPT-4 for Target LLM
-            model_name = "gpt-4"
+            # Default to GPT-4o-mini for Target LLM
+            model_name = "gpt-4o-mini"
         
         return ModelFactory.create_client(model_name)
     
@@ -68,13 +68,13 @@ class ModelFactory:
         Create Judge LLM client.
         
         Args:
-            model_name: Model name (defaults to "gpt-4")
+            model_name: Model name (defaults to "gpt-4o-mini")
             
         Returns:
             Judge LLM client instance
         """
         if model_name is None:
-            # Default to GPT-4 for Judge LLM
-            model_name = "gpt-4"
+            # Default to GPT-4o-mini for Judge LLM
+            model_name = "gpt-4o-mini"
         
         return ModelFactory.create_client(model_name)

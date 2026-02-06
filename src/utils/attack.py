@@ -188,7 +188,9 @@ def attack_single_query(
 
 def run_attack_pipeline(
     categories: List[str],
-    model_name: str,
+    word_model: Optional[str] = None,
+    target_model: Optional[str] = None,
+    judge_model: Optional[str] = None,
     output_file: Optional[str] = None,
     csv_path: str = "data/harmful_behaviors.csv",
     limit: Optional[int] = None
@@ -222,10 +224,13 @@ def run_attack_pipeline(
         close_log_file()
         raise
     
-    log(f"Using model: {model_name} for Word LLM and Target LLM", log_file=log_file)
+    log(f"Word LLM model: {word_model or 'default (gpt-4o-mini)'}", log_file=log_file)
+    log(f"Target LLM model: {target_model or 'default (gpt-4o-mini)'}", log_file=log_file)
+    log(f"Judge LLM model: {judge_model or 'default (gpt-4o-mini)'}", log_file=log_file)
     try:
-        word_llm = ModelFactory.create_word_llm(model_name)
-        target_llm = ModelFactory.create_target_llm(model_name)
+        word_llm = ModelFactory.create_word_llm(word_model)
+        target_llm = ModelFactory.create_target_llm(target_model)
+        judge_llm = ModelFactory.create_judge_llm(judge_model)
         log(f"✓ LLM clients created", log_file=log_file)
     except Exception as e:
         log(f"Failed to create LLM clients: {e}", "ERROR", log_file=log_file)
