@@ -49,14 +49,7 @@ venv.bak/
 logs/
 
 # Results (generated files)
-results/dictionaries/*.csv
-results/*.json
-results/*.csv
-results/*.txt
-results/*.log
-
-# Keep directory structure
-!results/dictionaries/.gitkeep
+results/
 
 # Jupyter Notebook
 .ipynb_checkpoints

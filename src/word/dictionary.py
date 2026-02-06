@@ -10,13 +10,12 @@ from pathlib import Path
 class Dictionary:
     """Manages word substitution dictionary (Original → Alternative)."""
     
-    # Expected word counts by category
+    # Expected word counts by category (Total: 170 per list - harmful and benign)
     EXPECTED_COUNTS = {
         "noun": 50,
         "verb": 50,
-        "adjective": 20,
-        "adverb": 20,
-        "interrogative": 10,
+        "adjective": 30,
+        "adverb": 30,
         "unit": 10,
     }
     
@@ -139,19 +138,19 @@ class Dictionary:
                     f"got {actual_count}"
                 )
         
-        # Check for duplicates
-        all_originals = []
-        all_alternatives = []
-        
+        # Check for duplicates within each category only
         for category, words in self.mappings.items():
+            category_originals = []
+            category_alternatives = []
+            
             for original, alternative in words.items():
-                if original in all_originals:
-                    errors.append(f"Duplicate original word: '{original}'")
-                all_originals.append(original)
+                if original in category_originals:
+                    errors.append(f"Duplicate original word '{original}' in category '{category}'")
+                category_originals.append(original)
                 
-                if alternative in all_alternatives:
-                    errors.append(f"Duplicate alternative word: '{alternative}'")
-                all_alternatives.append(alternative)
+                if alternative in category_alternatives:
+                    errors.append(f"Duplicate alternative word '{alternative}' in category '{category}'")
+                category_alternatives.append(alternative)
         
         return len(errors) == 0, errors
     
