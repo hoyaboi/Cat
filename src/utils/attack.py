@@ -400,9 +400,7 @@ def run_attack_pipeline(
             "total_tasks": len(queries),
             "successful_tasks": len(successful_tasks),
             "success_rate": len(successful_tasks) / len(queries) if len(queries) > 0 else 0.0,
-            "total_time_seconds": total_time,
-            "total_time_formatted": _format_time(total_time),
-            "timestamp": datetime.now().isoformat(),
+            "total_time": total_time,
             "models": {
                 "word_llm": word_model or "gpt-4o-mini",
                 "target_llm": target_model or "gpt-4o-mini",
@@ -421,7 +419,7 @@ def run_attack_pipeline(
         log(f"Total tasks processed: {len(queries)}", log_file=log_file)
         log(f"Successful tasks: {len(successful_tasks)}/{len(queries)}", log_file=log_file)
         log(f"Success rate: {summary['success_rate']:.2%}", log_file=log_file)
-        log(f"Total time elapsed: {summary['total_time_formatted']}", log_file=log_file)
+        log(f"Total time elapsed: {_format_time(summary['total_time'])}", log_file=log_file)
         log(f"Results file: {result_file}", log_file=log_file)
         log(f"Log file: {log_file}", log_file=log_file)
         log("", log_file=log_file)
