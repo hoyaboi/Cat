@@ -16,7 +16,7 @@ The attack pipeline consists of three main LLM components:
 
 2. Download NLTK data:
    ```python
-   python -c "import nltk; nltk.download('punkt'); nltk.download('averaged_perceptron_tagger'); nltk.download('wordnet')"
+   python -c "import nltk; nltk.download('punkt'); nltk.download('punkt_tab'); nltk.download('averaged_perceptron_tagger_eng'); nltk.download('wordnet')"
    ```
 
 3. Set up environment variables:
