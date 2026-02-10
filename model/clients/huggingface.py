@@ -52,6 +52,10 @@ class HuggingFaceClient(LLMClient):
             trust_remote_code=trust_remote_code,
         )
         
+        # Set pad_token if not set (required for some models)
+        if self.tokenizer.pad_token is None:
+            self.tokenizer.pad_token = self.tokenizer.eos_token
+        
         dtype = None
         if torch_dtype == "float16" and self.use_cuda:
             dtype = torch.float16
@@ -79,13 +83,31 @@ class HuggingFaceClient(LLMClient):
         """Call HuggingFace model."""
         import torch
         
-        # Format prompt (adjust based on model's chat template)
-        full_prompt = f"{system_prompt}\n\n{user_prompt}"
+        # Check if tokenizer has chat template (for Instruct models)
+        if hasattr(self.tokenizer, 'chat_template') and self.tokenizer.chat_template:
+            # Use chat template for proper formatting
+            messages = [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt}
+            ]
+            formatted_prompt = self.tokenizer.apply_chat_template(
+                messages,
+                tokenize=False,
+                add_generation_prompt=True
+            )
+            # Tokenize the formatted prompt
+            inputs = self.tokenizer(formatted_prompt, return_tensors="pt")
+        else:
+            # Fallback to simple concatenation for models without chat template
+            full_prompt = f"{system_prompt}\n\n{user_prompt}"
+            inputs = self.tokenizer(full_prompt, return_tensors="pt")
+            formatted_prompt = full_prompt
         
-        # Tokenize
-        inputs = self.tokenizer(full_prompt, return_tensors="pt")
         if self.use_cuda:
             inputs = {k: v.to(self.model.device) for k, v in inputs.items()}
+        
+        # Store input length to extract only generated tokens
+        input_length = inputs['input_ids'].shape[1]
         
         # Generate
         max_new_tokens = max_tokens or self.max_new_tokens
@@ -95,14 +117,13 @@ class HuggingFaceClient(LLMClient):
                 max_new_tokens=max_new_tokens,
                 temperature=temperature,
                 do_sample=temperature > 0,
-                pad_token_id=self.tokenizer.eos_token_id,
+                pad_token_id=self.tokenizer.pad_token_id or self.tokenizer.eos_token_id,
             )
         
-        # Decode
-        generated_text = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
+        # Extract only the generated tokens (skip input tokens)
+        generated_tokens = outputs[0][input_length:]
         
-        # Remove input prompt from output
-        if generated_text.startswith(full_prompt):
-            generated_text = generated_text[len(full_prompt):].strip()
+        # Decode only the generated part
+        generated_text = self.tokenizer.decode(generated_tokens, skip_special_tokens=True)
         
-        return generated_text
+        return generated_text.strip()
