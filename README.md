@@ -14,12 +14,7 @@ The attack pipeline consists of three main LLM components:
    pip install -r requirements.txt
    ```
 
-2. Download NLTK data:
-   ```python
-   python -c "import nltk; nltk.download('punkt'); nltk.download('punkt_tab'); nltk.download('averaged_perceptron_tagger_eng'); nltk.download('wordnet')"
-   ```
-
-3. Set up environment variables:
+2. Set up environment variables:
    
    Create a `.env` file in the project root directory and add your API keys:
    ```bash
@@ -30,7 +25,7 @@ The attack pipeline consists of three main LLM components:
    
    Note: The `.env` file is already included in `.gitignore` to keep your keys secure.
 
-4. Run the attack pipeline:
+3. Run the attack pipeline:
    ```bash
    python main.py
    ```
