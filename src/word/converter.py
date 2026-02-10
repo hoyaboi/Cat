@@ -22,12 +22,12 @@ except LookupError:
     nltk.download('punkt_tab', quiet=True)
 
 try:
-    nltk.data.find('taggers/averaged_perceptron_tagger')
+    nltk.data.find('taggers/averaged_perceptron_tagger_eng')
 except LookupError:
     try:
-        nltk.download('averaged_perceptron_tagger', quiet=True)
-    except:
         nltk.download('averaged_perceptron_tagger_eng', quiet=True)
+    except:
+        nltk.download('averaged_perceptron_tagger', quiet=True)
 
 try:
     nltk.data.find('corpora/wordnet')
