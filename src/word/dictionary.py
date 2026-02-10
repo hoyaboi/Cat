@@ -10,12 +10,12 @@ from pathlib import Path
 class Dictionary:
     """Manages word substitution dictionary (Original → Alternative)."""
     
-    # Expected word counts by category (Total: 140 per list - harmful and benign)
+    # Expected word counts by category
     EXPECTED_COUNTS = {
         "noun": 50,
         "verb": 30,
         "adjective": 30,
-        "adverb": 30
+        "adverb": 20
     }
     
     def __init__(self, mappings: Optional[Dict[str, Dict[str, str]]] = None):
