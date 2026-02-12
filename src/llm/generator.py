@@ -27,7 +27,8 @@ except LookupError:
         nltk.download('averaged_perceptron_tagger', quiet=True)
 
 
-WORD_PROMPT_PATH = Path("prompts/word_llm_system.yaml")
+WORD_PROMPT_PATH_HARMFUL = Path("prompts/word_llm_harmful_system.yaml")
+WORD_PROMPT_PATH_BENIGN = Path("prompts/word_llm_benign_system.yaml")
 MAX_ATTEMPTS = 5
 VALID_CATEGORIES = {'noun', 'verb', 'adjective', 'adverb'}
 
@@ -267,10 +268,16 @@ def _call_llm_for_words(
 
 def _load_and_prepare_prompt(category: str, list_type: str, word_count: int = 100, strategy: str = "") -> str:
     """Load prompt template and replace placeholders."""
-    if not WORD_PROMPT_PATH.exists():
-        raise FileNotFoundError(f"Prompt file not found: {WORD_PROMPT_PATH}")
+    # Select prompt file based on list_type
+    if list_type == "harmful":
+        prompt_path = WORD_PROMPT_PATH_HARMFUL
+    else:
+        prompt_path = WORD_PROMPT_PATH_BENIGN
     
-    with open(WORD_PROMPT_PATH, 'r', encoding='utf-8') as f:
+    if not prompt_path.exists():
+        raise FileNotFoundError(f"Prompt file not found: {prompt_path}")
+    
+    with open(prompt_path, 'r', encoding='utf-8') as f:
         prompt_config = yaml.safe_load(f)
         template = prompt_config['prompt']
     

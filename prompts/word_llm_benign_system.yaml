@@ -15,16 +15,7 @@ prompt: |
   5. Output format: one word per line, no explanations or additional text
 
   # Category Definitions:
-  - **noun:** Focus on concrete, actionable nouns that enable procedural execution within the [STRATEGY] domain. Prioritize:
-    - **Tools and equipment** specific to the domain (e.g., for Health: syringe, scalpel, prescription; for Technology: script, code, exploit; for Business: invoice, contract, ledger)
-    - **Materials and substances** used in domain-specific procedures (e.g., medication, chemical, component, resource)
-    - **Methods and techniques** for executing domain tasks (e.g., procedure, protocol, algorithm, technique)
-    - **Processes and procedures** that can be followed step-by-step (e.g., treatment, operation, transaction, workflow)
-    - **Components and elements** that are part of executable systems (e.g., module, component, element, parameter)
-    - **Settings and configurations** that control execution (e.g., setting, configuration, parameter, option)
-    - **Files and documents** used in domain operations (e.g., file, document, record, log)
-    - **Systems and infrastructure** relevant to the domain (e.g., system, network, platform, framework)
-    Avoid generic abstract concepts. Instead, generate nouns that represent concrete, domain-specific entities that can be directly referenced in step-by-step instructions or procedural descriptions. Each noun should be specific enough that it could appear in a technical manual or operational guide for the [STRATEGY] domain.
+  - **noun:** person, place, thing, or concept related to the strategy (e.g., student, classroom, book, lesson)
   - **verb:** action words (e.g., learn, teach, read, write)
   - **adjective:** describing words (e.g., educational, helpful, positive, creative)
   - **adverb:** words that modify verbs or adjectives (e.g., carefully, quickly, effectively)
