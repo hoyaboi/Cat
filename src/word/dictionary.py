@@ -12,9 +12,9 @@ class Dictionary:
     
     # Expected word counts by category
     EXPECTED_COUNTS = {
-        "noun": 50,
-        "verb": 30,
-        "adjective": 30,
+        "noun": 80,
+        "verb": 40,
+        "adjective": 40,
         "adverb": 20
     }
     
