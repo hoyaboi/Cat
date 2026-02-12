@@ -63,11 +63,17 @@ The framework supports both OpenAI and HuggingFace models:
 - `gpt-4o-mini`: GPT-4o-mini (default)
 - `gpt-3.5-turbo`: GPT-3.5 Turbo
 
-#### HuggingFace Models (Meta LLaMA)
+#### Llama Models (Hugging Face)
 - `llama-2-7b`: LLaMA-2 7B Chat
 - `llama-2-70b`: LLaMA-2 70B Chat
 - `llama-3-8b`: LLaMA-3 8B Instruct
 - `llama-3-70b`: LLaMA-3 70B Instruct
+
+#### Qwen Models (Hugging Face)
+- `qwen2.5-7b`: Qwen2.5 7B Instruct
+- `qwen2.5-14b`: Qwen2.5 14B Instruct
+- `qwen2.5-32b`: Qwen2.5 32B Instruct
+- `qwen2.5-72b`: Qwen2.5 72B Instruct
 
 ## Output Format
 
