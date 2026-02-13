@@ -350,7 +350,7 @@ def run_attack_pipeline(
                 key_words=key_words,
                 strategy=harmful_strategy
             )
-            log(f"[Task {task_num}] ✓ Harmful words generated (will be reused for all strategies)", log_file=log_file)
+            log(f"[Task {task_num}] ✓ Harmful words generated", log_file=log_file)
             
             for strategy in strategies:
                 log(f"[Task {task_num}] Testing strategy: {strategy}", log_file=log_file)
@@ -385,7 +385,7 @@ def run_attack_pipeline(
             log(f"[Task {task_num}] ✓ Results saved", log_file=log_file)
         
         log("", log_file=log_file)
-        log("=" * 80, log_file=log_file)
+        log("=" * 100, log_file=log_file)
         
         total_time = time.time() - start_time
         
