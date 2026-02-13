@@ -5,6 +5,7 @@ pandas>=2.0.0
 
 # LLM clients
 openai>=1.0.0
+google-generativeai>=0.3.0
 transformers>=4.30.0
 torch>=2.0.0
 
