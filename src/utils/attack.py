@@ -270,12 +270,14 @@ def run_attack_pipeline(
     limit: Optional[int] = None
 ) -> str:
     """Run the complete attack pipeline."""
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    # Format model name for file names (replace hyphens with underscores)
+    model_name = (target_model or "gpt-4o-mini").replace("-", "_")
+    timestamp = datetime.now().strftime("%H%M%S")
     
     if output_file is None:
-        output_file = f"results/results_{timestamp}.json"
+        output_file = f"results/results_{model_name}_{timestamp}.json"
     
-    log_file = f"results/logs/log_{timestamp}.log"
+    log_file = f"results/logs/log_{model_name}_{timestamp}.log"
     
     log("=" * 100, log_file=log_file)
     log("Starting Target LLM Attack Pipeline", log_file=log_file)
@@ -286,7 +288,7 @@ def run_attack_pipeline(
     log(f"Log file: {log_file}", log_file=log_file)
     log(f"Result file: {output_file}", log_file=log_file)
     
-    dictionary_base_dir = f"results/dictionaries/dictionary_{timestamp}"
+    dictionary_base_dir = f"results/dictionaries/dictionary_{model_name}_{timestamp}"
     os.makedirs(dictionary_base_dir, exist_ok=True)
     log(f"Dictionary directory: {dictionary_base_dir}", log_file=log_file)
     
