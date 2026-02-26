@@ -267,7 +267,8 @@ def run_attack_pipeline(
     judge_model: Optional[str] = None,
     output_file: Optional[str] = None,
     csv_path: str = "data/harmful_behaviors.csv",
-    limit: Optional[int] = None
+    limit: Optional[int] = None,
+    early_stop: bool = True
 ) -> str:
     """Run the complete attack pipeline."""
     # Format model name for file names (replace hyphens with underscores)
@@ -283,6 +284,7 @@ def run_attack_pipeline(
     log("Starting Target LLM Attack Pipeline", log_file=log_file)
     log("=" * 100, log_file=log_file)
     log(f"Strategies to test: {strategies}", log_file=log_file)
+    log(f"Early stop: {early_stop}", log_file=log_file)
     if limit:
         log(f"Limit: {limit} queries", log_file=log_file)
     log(f"Log file: {log_file}", log_file=log_file)
@@ -373,8 +375,8 @@ def run_attack_pipeline(
                 all_results.append(result)
                 log("-" * 100, log_file=log_file)
                 
-                # Early stop if attack succeeded
-                if result.get('success', False):
+                # Early stop if attack succeeded (when enabled)
+                if early_stop and result.get('success', False):
                     log(f"[Task {task_num}] ✓ Attack succeeded with strategy '{strategy}'. Stopping early.", log_file=log_file)
                     break
             

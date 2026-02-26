@@ -47,6 +47,13 @@ def main():
         help="Output file path (default: auto-generated)"
     )
 
+    parser.add_argument(
+        "--no-early-stop",
+        action="store_true",
+        default=False,
+        help="Disable early stop — run all strategies even after a successful attack (default: early stop enabled)"
+    )
+
     
     args = parser.parse_args()
     
@@ -56,7 +63,8 @@ def main():
         target_model=args.target_model,
         judge_model=args.judge_model,
         output_file=args.output_file,
-        limit=args.limit
+        limit=args.limit,
+        early_stop=not args.no_early_stop
     )
 
 
