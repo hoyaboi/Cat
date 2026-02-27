@@ -89,7 +89,8 @@ def generate_dictionary(
     word_llm_client: Optional[LLMClient] = None,
     output_dir: str = "results/dictionaries",
     task_num: Optional[int] = None,
-    harmful_words: Optional[Dict[str, List[str]]] = None
+    harmful_words: Optional[Dict[str, List[str]]] = None,
+    word_counts: Optional[Dict[str, int]] = None,
 ) -> Dictionary:
     """
     Generate word substitution dictionary using Word LLM.
@@ -102,6 +103,8 @@ def generate_dictionary(
         task_num: Task number for file naming
         harmful_words: Optional pre-generated harmful words dict. If provided, 
                       will reuse instead of generating new ones.
+        word_counts: Optional dict of {pos: count} overriding Dictionary.EXPECTED_COUNTS.
+                     e.g. {"noun": 80, "verb": 40, "adjective": 40, "adverb": 20}
     
     Returns:
         Dictionary instance with word mappings
@@ -109,6 +112,8 @@ def generate_dictionary(
     if word_llm_client is None:
         word_llm_client = ModelFactory.create_word_llm()
     
+    effective_counts = word_counts or dict(Dictionary.EXPECTED_COUNTS)
+
     # Generate harmful words only if not provided
     if harmful_words is None:
         # Extract key words from harmful query (these become the strategy)
@@ -127,7 +132,8 @@ def generate_dictionary(
             output_dir=output_dir,
             list_type="harmful",
             key_words=key_words,
-            strategy=harmful_strategy
+            strategy=harmful_strategy,
+            word_counts=effective_counts,
         )
     
     # Always generate benign words for the target category (strategy)
@@ -137,10 +143,11 @@ def generate_dictionary(
         task_num=task_num,
         output_dir=output_dir,
         list_type="benign",
-        strategy=target_category
+        strategy=target_category,
+        word_counts=effective_counts,
     )
     
-    all_mappings = _match_word_lists(harmful_words, benign_words)
+    all_mappings = _match_word_lists(harmful_words, benign_words, effective_counts)
     
     dictionary = Dictionary(all_mappings)
     _validate_and_save_dictionary(dictionary, target_category, output_dir, task_num)
@@ -155,12 +162,14 @@ def _generate_word_list(
     output_dir: str,
     list_type: str,
     key_words: Optional[Dict[str, Set[str]]] = None,
-    strategy: str = ""
+    strategy: str = "",
+    word_counts: Optional[Dict[str, int]] = None,
 ) -> Dict[str, List[str]]:
     """Generate a list of words (harmful or benign) organized by category."""
     all_words: Dict[str, List[str]] = {}
-    
-    for category, expected_count in Dictionary.EXPECTED_COUNTS.items():
+    effective_counts = word_counts or dict(Dictionary.EXPECTED_COUNTS)
+
+    for category, expected_count in effective_counts.items():
         category_keywords = key_words.get(category, set()) if key_words else set()
         category_words = _generate_category_words_with_retry(
             context=context,
@@ -370,12 +379,14 @@ def _extract_word_from_line(line: str) -> Optional[str]:
 
 def _match_word_lists(
     harmful_words: Dict[str, List[str]],
-    benign_words: Dict[str, List[str]]
+    benign_words: Dict[str, List[str]],
+    word_counts: Optional[Dict[str, int]] = None,
 ) -> Dict[str, Dict[str, str]]:
     """Match harmful and benign word lists 1:1 by category."""
     all_mappings: Dict[str, Dict[str, str]] = {}
-    
-    for category in Dictionary.EXPECTED_COUNTS.keys():
+    effective_counts = word_counts or dict(Dictionary.EXPECTED_COUNTS)
+
+    for category in effective_counts.keys():
         harmful_list = harmful_words.get(category, [])
         benign_list = benign_words.get(category, [])
         
@@ -398,11 +409,16 @@ def _validate_and_save_dictionary(
 ) -> None:
     """Validate dictionary and save to CSV file."""
     dictionary.validate()
-    
-    os.makedirs(output_dir, exist_ok=True)
-    
-    filename = f"task{task_num}_{target_category.lower()}.csv" if task_num else f"{target_category.lower()}.csv"
-    file_path = os.path.join(output_dir, filename)
+
+    if task_num:
+        save_dir = os.path.join(output_dir, f"task{task_num}")
+        filename = f"task{task_num}_{target_category.lower()}.csv"
+    else:
+        save_dir = output_dir
+        filename = f"{target_category.lower()}.csv"
+
+    os.makedirs(save_dir, exist_ok=True)
+    file_path = os.path.join(save_dir, filename)
     
     dictionary.save_to_csv(file_path)
 
