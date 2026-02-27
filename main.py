@@ -3,11 +3,7 @@ Main entry point for CAT attack pipeline.
 Requires dictionaries to be pre-generated via gen_dictionary.py.
 """
 import argparse
-from src.utils import run_attack_pipeline
-from src.utils.attack import DICTIONARY_DIR
-
-# Default strategies
-STRATEGIES = ["Education", "Entertainment", "Health", "Business", "Technology"]
+from src.utils import run_attack_pipeline, STRATEGIES, DICTIONARY_DIR
 
 
 def main():

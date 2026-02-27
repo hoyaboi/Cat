@@ -17,15 +17,10 @@ from datetime import datetime
 from typing import Optional
 
 from src.utils.attack import load_harmful_queries
+from src.utils import STRATEGIES, DICTIONARY_DIR
 from src.llm.generator import generate_dictionary
 from src.utils.logger import log, close_log_file
 from model import ModelFactory
-
-# Default strategies (must match main.py)
-STRATEGIES = ["Education", "Entertainment", "Health", "Business", "Technology"]
-
-# Default dictionary output directory
-DICTIONARY_DIR = "results/dictionaries"
 
 
 def _format_time(seconds: float) -> str:

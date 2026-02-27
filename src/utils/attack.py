@@ -13,6 +13,9 @@ from src.word import Dictionary, convert_query, reverse_convert
 from src.utils.logger import log, close_log_file
 from model import ModelFactory, LLMClient
 
+# Default strategies for word substitution
+STRATEGIES = ["Education", "Entertainment", "Health", "Business", "Technology"]
+
 # Default directory where gen_dictionary.py saves pre-generated dictionaries
 DICTIONARY_DIR = "results/dictionaries"
 
