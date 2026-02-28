@@ -20,6 +20,7 @@ class ModelConfig:
     api_key_env: str
     endpoint: Optional[str] = None
     api_version: Optional[str] = None
+    api_key_optional: bool = False  # If True, api_key_env is not required (e.g. local vLLM server)
     
     def to_client(self) -> LLMClient:
         """
@@ -30,8 +31,12 @@ class ModelConfig:
         """
         api_key = os.getenv(self.api_key_env)
         
-        if not api_key and self.model_type != "huggingface":
+        if not api_key and self.model_type != "huggingface" and not self.api_key_optional:
             raise ValueError(f"API key not found: {self.api_key_env}")
+        
+        # Use a placeholder for local servers that don't require authentication
+        if not api_key and self.api_key_optional:
+            api_key = "not-required"
         
         if self.model_type == "openai":
             endpoint = self.endpoint if self.endpoint else "https://api.openai.com/v1"
@@ -160,5 +165,25 @@ AVAILABLE_MODELS = {
         model_type="gemini",
         deployment_name="gemini-2.5-flash",
         api_key_env="GOOGLE_API_KEY"
+    ),
+
+    # vLLM local servers (OpenAI-compatible API, no API key required)
+    # llama:  vllm serve meta-llama/Meta-Llama-3-8B-Instruct --port 8000 --dtype float16
+    # qwen:   vllm serve Qwen/Qwen2.5-7B-Instruct            --port 8001 --dtype float16
+    "llama-3-8b-vllm": ModelConfig(
+        name="LLaMA-3-8B (vLLM)",
+        model_type="openai",
+        deployment_name="meta-llama/Meta-Llama-3-8B-Instruct",
+        api_key_env="VLLM_API_KEY",
+        endpoint="http://localhost:8000/v1",
+        api_key_optional=True
+    ),
+    "qwen2.5-7b-vllm": ModelConfig(
+        name="Qwen2.5-7B (vLLM)",
+        model_type="openai",
+        deployment_name="Qwen/Qwen2.5-7B-Instruct",
+        api_key_env="VLLM_API_KEY",
+        endpoint="http://localhost:8001/v1",
+        api_key_optional=True
     ),
 }

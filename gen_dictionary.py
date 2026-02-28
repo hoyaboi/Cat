@@ -1,12 +1,17 @@
 """
 Pre-generate word substitution dictionaries for all tasks × strategies.
-Run this script before main.py to share dictionaries across all target models.
+
+Running this script is optional: main.py automatically generates dictionaries
+when the dictionary directory is missing or empty.
+Use this script when you want to generate or regenerate dictionaries
+independently of the attack pipeline (e.g. to share across multiple models).
 
 Usage:
     python gen_dictionary.py
     python gen_dictionary.py --limit 10
     python gen_dictionary.py --noun 80 --verb 40 --adjective 40 --adverb 20
     python gen_dictionary.py --word-model gpt-4o-mini --limit 5
+    python gen_dictionary.py --workers 4
 """
 import argparse
 import os
