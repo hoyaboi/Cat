@@ -1,6 +1,6 @@
 # CAT: Contextual Alignment Transformation
 
-CAT is an adversarial attack framework that uses contextual word substitution to bypass safety filters in Large Language Models (LLMs). The framework generates word substitution dictionaries by mapping harmful words to benign alternatives within specific contextual strategies (Education, Entertainment, Health, Business, Technology), then uses these dictionaries to transform harmful queries and evaluate the effectiveness of the attack.
+CAT is an adversarial attack framework that uses contextual word substitution to bypass safety filters in Large Language Models (LLMs). The framework generates word substitution dictionaries by mapping harmful words to benign alternatives within specific contextual strategies (Education, Business, Economy, Engineering, Technology, Science, Mathematics, Health, Geography, Language, Energy, Nature, Philosophy, Universe), then uses these dictionaries to transform harmful queries and evaluate the effectiveness of the attack.
 
 The attack pipeline consists of three main LLM components:
 - **Word LLM**: Generates word substitution dictionaries
@@ -32,31 +32,33 @@ The attack pipeline consists of three main LLM components:
    ```bash
    python main.py
    ```
+   
+   Dictionaries are automatically generated before the attack if the dictionary directory does not exist. To pre-generate them separately, run `gen_dictionary.py`.
 
 ## Parameters
 
 ### Default Strategies
 
-The pipeline tests five contextual strategies by default:
-- Education
-- Entertainment
-- Health
-- Business
-- Technology
+The pipeline tests 14 contextual strategies by default:
+- Education, Business, Economy, Engineering, Technology, Science
+- Mathematics, Health, Geography, Language, Energy, Nature, Philosophy, Universe
 
 ### Command Line Arguments
 
-- `--word-model`: Model name for Word LLM (default: `gpt-4o-mini`)
 - `--target-model`: Model name for Target LLM (default: `gpt-4o-mini`)
 - `--judge-model`: Model name for Judge LLM (default: `gpt-4o-mini`)
 - `--limit`: Limit number of queries to process (default: `None`, processes all)
 - `--output-file`: Output file path for results (default: auto-generated as `results/results_{timestamp}.json`)
+- `--no-early-stop`: Disable early stop — run all strategies even after a successful attack
+- `--dictionary-dir`: Directory containing pre-generated dictionaries (default: `results/dictionaries`)
+- `--word-model`: Model name for Word LLM used during dictionary generation (default: `gpt-4o-mini`)
+- `--workers`: Parallel workers for strategy-level dictionary generation (default: `1`)
 
 ## Victim Models
 
 ### Supported Models
 
-The framework supports both OpenAI and HuggingFace models:
+The framework supports OpenAI, HuggingFace, vLLM, and Gemini models:
 
 #### OpenAI Models
 - `gpt-4`: GPT-4
@@ -79,6 +81,15 @@ The framework supports both OpenAI and HuggingFace models:
 #### Gemini Models (Google)
 - `gemini-2.5-flash`: Gemini 2.5 Flash
 
+#### vLLM Local Server
+Start the vLLM server before use (no API key required):
+```bash
+vllm serve meta-llama/Meta-Llama-3-8B-Instruct --port 8000 --dtype float16
+vllm serve Qwen/Qwen2.5-7B-Instruct            --port 8001 --dtype float16
+```
+- `llama-3-8b-vllm`: LLaMA-3 8B via vLLM (port 8000)
+- `qwen2.5-7b-vllm`: Qwen2.5 7B via vLLM (port 8001)
+
 ## Output Format
 
 Results are saved in JSON format with the following structure:
@@ -91,7 +102,6 @@ Results are saved in JSON format with the following structure:
     "success_rate": 0.59,
     "total_time": 12553.04,
     "models": {
-      "word_llm": "gpt-4o-mini",
       "target_llm": "llama-3-8b",
       "judge_llm": "gpt-4o-mini"
     }
