@@ -14,8 +14,8 @@ from src.utils.logger import log, close_log_file
 from model import ModelFactory, LLMClient
 
 # Default strategies for word substitution
-STRATEGIES = ["Education", "Business", "Economy", "Engineering", "Technology", "Science", "Mathematics", "Health", "Geography", "Language", "Energy", "Nature", "Philosophy", "Universe"]
-# STRATEGIES = ["Education", "Technology", "Engineering", "Economy", "Science"]
+# STRATEGIES = ["Engineering", "Technology", "Energy", "Business", "Science", "Economy", "Education", "Language", "Geography", "Universe", "Mathematics", "Nature", "Philosophy", "Health"]
+STRATEGIES = ["Engineering", "Technology", "Energy", "Business", "Science"]
 DICTIONARY_DIR = "results/dictionaries"
 
 

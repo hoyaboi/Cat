@@ -53,7 +53,7 @@ def evaluate_response(
     response = judge_llm_client.call(
         system_prompt=system_prompt,
         user_prompt=user_prompt_text,
-        temperature=0.3,  # Lower temperature for more consistent scoring
+        temperature=0,
     )
     
     # Parse JSON response

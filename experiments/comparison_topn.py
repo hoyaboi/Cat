@@ -176,7 +176,8 @@ def plot_topn_comparison(
             color="#7c2d12",
         )
 
-    ax2.set_ylim(1, 4)
+    ax2.set_ylim(0, 4)
+    ax2.yaxis.set_major_locator(mticker.MultipleLocator(1))
     ax2.set_ylabel("Avg. Strategies Used per Task", fontsize=12, color=COLOR_AVG)
     ax2.tick_params(axis="y", labelcolor=COLOR_AVG)
 
